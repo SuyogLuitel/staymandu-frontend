@@ -27,7 +27,10 @@ const Navbar = () => {
             <FaHotel fontSize={26} cursor={"pointer"} />
             <p className="text-lg font-medium">Hotel</p>
           </div>
-          <div className="flex items-center cursor-pointer hover:text-[#1D293B]">
+          <div
+            className="flex items-center cursor-pointer hover:text-[#1D293B]"
+            onClick={() => navigate("/hotel/add")}
+          >
             <MdAdd fontSize={26} cursor={"pointer"} />
             <p className="text-lg font-medium">List your hotel</p>
           </div>
