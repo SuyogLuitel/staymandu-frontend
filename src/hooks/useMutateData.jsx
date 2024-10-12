@@ -32,7 +32,8 @@ export const useMutate = (
   return mutation;
 };
 
-export const useLoginMutation = () => useMutate(["login"], "api/user/login/");
+export const useLoginMutation = () =>
+  useMutate(["login"], "api/v1/user/login/");
 
 export const useSignupMutation = () =>
-  useMutate(["signup"], "api/user/signup/");
+  useMutate(["signup"], "api/v1/user/register/");
