@@ -2,6 +2,7 @@ import React from "react";
 import Hero from "./Hero";
 import BrowseByType from "./BrowseByType";
 import PopularDeals from "./PopularDeals";
+import PopularDestination from "./PopularDestination";
 
 const Home = () => {
   return (
@@ -9,6 +10,7 @@ const Home = () => {
       <Hero />
       <BrowseByType />
       <PopularDeals />
+      <PopularDestination />
     </div>
   );
 };
