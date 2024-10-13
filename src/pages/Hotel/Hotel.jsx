@@ -12,11 +12,18 @@ const Hotel = () => {
 
   const options = [{ label: "abc", value: "abc" }];
 
-  const facilityList = [
-    { id: 1, label: "Parking", value: "Parking" },
-    { id: 2, label: "Free Wifi", value: "Free Wifi" },
-    { id: 3, label: "Swimming pool", value: "Swimming pool" },
-    { id: 4, label: "Private bathroom", value: "Private bathroom" },
+  const amnetiesOption = [
+    { label: "Gym", value: "gym" },
+    { label: "Bar", value: "bar" },
+    { label: "Laundry", value: "laundry" },
+    { label: "Restaurant", value: "restaurant" },
+    { label: "Shopping", value: "shopping" },
+    { label: "Free Parking", value: "freeParking" },
+    { label: "Bike Rental", value: "bikeRental" },
+    { label: "Free wifi", value: "freewifi" },
+    { label: "Movie Night", value: "movieNight" },
+    { label: "Swimming Pool", value: "swimmingPool" },
+    { label: "Coffee Shop", value: "coffeeShop" },
   ];
 
   const ratingList = [
@@ -106,7 +113,7 @@ const Hotel = () => {
             <h2 className="text-xl font-bold text-[#343434]">
               Filter by amneties
             </h2>
-            {facilityList.map((item, index) => (
+            {amnetiesOption.map((item, index) => (
               <div key={index} className="flex gap-3 items-center">
                 <input
                   type="checkbox"

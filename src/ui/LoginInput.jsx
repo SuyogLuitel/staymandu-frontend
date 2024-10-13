@@ -20,7 +20,7 @@ const LoginInput = ({
         {labelName} {required && <span className="text-red-600"> *</span>}
       </label>
       <div
-        className={`px-2 py-3 w-full h-12 border border-[#8E8E93] hover:border-gray-800 focus-within:border-gray-800 rounded flex items-center ${className}`}
+        className={`px-2 py-3 w-full h-11 border border-[#8E8E93] hover:border-gray-800 focus-within:border-gray-800 rounded flex items-center ${className}`}
       >
         {icon}
         <input
