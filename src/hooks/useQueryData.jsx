@@ -21,3 +21,6 @@ export const useHotelData = () =>
 
 export const useSpecificHotelData = (id) =>
   useQueryData(["hotelById", id], `api/v1/hotel/${id}`, "");
+
+export const useHotelDataByUserId = (id) =>
+  useQueryData(["hotelByUserId", id], `api/v1/hotel/list/${id}`, "");

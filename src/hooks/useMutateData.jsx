@@ -40,5 +40,8 @@ export const useSignupMutation = () =>
 export const useHotelMutation = () =>
   useMutate(["hotel"], "api/v1/hotel/add", "multipart/form-data");
 
+export const useRoomMutation = () =>
+  useMutate(["room"], "api/v1/hotel/add-room", "multipart/form-data");
+
 export const useReviewMutation = () =>
   useMutate(["review"], "api/v1/hotel/add-review");

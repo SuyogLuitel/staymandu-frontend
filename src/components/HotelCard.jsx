@@ -1,10 +1,12 @@
 import React from "react";
-import { FaStar } from "react-icons/fa";
+import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoLocationOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import Button from "../ui/Button";
 
 const HotelCard = ({ data, index }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const fullStars = Math.floor(data?.ratings?.averageRating);
   const hasHalfStar = data?.ratings?.averageRating % 1 >= 0.5;
@@ -13,6 +15,7 @@ const HotelCard = ({ data, index }) => {
     <div
       className="flex flex-col border rounded cursor-pointer hover:mt-1"
       onClick={() => navigate(`/hotel/${data?._id}`)}
+      key={index}
     >
       <div>
         <img
@@ -45,6 +48,30 @@ const HotelCard = ({ data, index }) => {
             )
           )}
         </div>
+        {location.pathname === "/myProfile" && (
+          <div className="flex items-center gap-2 mt-4">
+            <button
+              className="py-2 px-3 text-white text-sm bg-[#1D293B] hover:bg-[#2c3b52] rounded"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate("/hotel/add", { state: edit });
+              }}
+            >
+              Update
+            </button>
+            <button
+              className="py-2 px-3 text-white text-sm bg-[#1D293B] hover:bg-[#2c3b52] rounded"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate("/hotel/room/add", {
+                  state: { id: data?._id, name: data?.title },
+                });
+              }}
+            >
+              Add Room
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

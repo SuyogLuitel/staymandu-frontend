@@ -9,6 +9,7 @@ import Button from "../../ui/Button";
 import { useHotelMutation } from "../../hooks/useMutateData";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 const hotelSchema = Yup.object().shape({
   title: Yup.string().required("Hotel name is required"),
@@ -35,9 +36,12 @@ const hotelSchema = Yup.object().shape({
 });
 
 const AddHotelForm = () => {
+  const navigate = useNavigate();
   const { user } = useAuthStore();
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedImage, setselectedImage] = useState(null);
+  const [display, setDisplay] = useState(false);
+  const [response, setResponse] = useState();
 
   const {
     register,
@@ -117,9 +121,11 @@ const AddHotelForm = () => {
       onSuccess: (response) => {
         // navigate("/");
         toast.success("Hotel added successfully");
-        reset();
-        setselectedImage(null);
-        setImagePreview(null);
+        setResponse(response?.hotel);
+        // reset();
+        // setselectedImage(null);
+        // setImagePreview(null);
+        setDisplay(true);
       },
       onError: (error) => {
         toast.error(error?.response?.data?.message);
@@ -274,6 +280,24 @@ const AddHotelForm = () => {
             <div className="flex justify-end mt-4">
               <Button btnName={"Add Hotel"} />
             </div>
+
+            {display && (
+              <div className="flex items-center justify-between py-5 bg-blue-200 rounded-md px-5">
+                <div className="flex flex-col gap-1">
+                  <p>Room added sucessfully.🎉🎉</p>
+                  <p>One final thing now!!!</p>
+                </div>
+                <Button
+                  btnName={"Add Room"}
+                  type={"button"}
+                  btnClick={() =>
+                    navigate("/hotel/room/add", {
+                      state: { id: response?._id, name: response?.title },
+                    })
+                  }
+                />
+              </div>
+            )}
           </div>
         </div>
       </form>

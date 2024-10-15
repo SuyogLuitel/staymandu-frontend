@@ -10,6 +10,7 @@ import Hotel from "./pages/Hotel/Hotel";
 import HotelDetail from "./pages/Hotel/HotelDetail";
 import { useAuthStore } from "./store/useAuthStore";
 import AddHotelForm from "./pages/Hotel/AddHotelForm";
+import AddRoomForm from "./pages/Hotel/AddRoomForm";
 
 const App = () => {
   const { loggedIn } = useAuthStore();
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/hotel" element={<Hotel />} />
           <Route path="/hotel/add" element={<AddHotelForm />} />
+          <Route path="/hotel/room/add" element={<AddRoomForm />} />
           <Route path="/hotel/:id" element={<HotelDetail />} />
           {loggedIn && (
             <>

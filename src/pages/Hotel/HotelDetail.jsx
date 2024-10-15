@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import hotel from "../../assets/hotels.jpeg";
-import { IoLocationOutline } from "react-icons/io5";
-import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { IoLocationOutline, IoTv } from "react-icons/io5";
+import {
+  FaBed,
+  FaRegStar,
+  FaStar,
+  FaStarHalfAlt,
+  FaUsers,
+} from "react-icons/fa";
 import { CgGym } from "react-icons/cg";
 import { BiDrink, BiSolidCameraMovie } from "react-icons/bi";
 import {
   MdDirectionsBike,
   MdLocalParking,
+  MdOutlineBalcony,
   MdOutlineLocalLaundryService,
+  MdOutlineRoomService,
   MdOutlineSignalWifiStatusbar4Bar,
   MdShoppingCart,
 } from "react-icons/md";
@@ -23,6 +31,8 @@ import Rating from "react-rating-stars-component";
 import { useReviewMutation } from "../../hooks/useMutateData";
 import toast from "react-hot-toast";
 import { timeAgo } from "../../utils/timeAgo";
+import { AiFillSound } from "react-icons/ai";
+import { TbAirConditioning } from "react-icons/tb";
 
 const HotelDetail = () => {
   const { id } = useParams();
@@ -92,6 +102,44 @@ const HotelDetail = () => {
       exist: data?.data?.coffeeShop,
     },
   ];
+
+  const roomAmnetiesOption = [
+    {
+      label: "Room Service",
+      value: "roomService",
+      icons: <MdOutlineRoomService />,
+    },
+    {
+      label: "TV",
+      value: "TV",
+      icons: <IoTv />,
+    },
+    {
+      label: "Balcony",
+      value: "balcony",
+      icons: <MdOutlineBalcony />,
+    },
+    {
+      label: "Free Wifi",
+      value: "freeWifi",
+      icons: <MdOutlineSignalWifiStatusbar4Bar />,
+    },
+    {
+      label: "Air Condition",
+      value: "airCondition",
+      icons: <TbAirConditioning />,
+    },
+    {
+      label: "Sound Proof",
+      value: "soundProof",
+      icons: <AiFillSound />,
+    },
+  ];
+
+  const existingAmenities = roomAmnetiesOption.map((amnety) => {
+    const exists = data?.data?.rooms?.some((room) => room[amnety.value]);
+    return { ...amnety, exist: exists };
+  });
 
   const fullStars = Math.floor(data?.data?.ratings?.averageRating);
   const hasHalfStar = data?.data?.ratings?.averageRating % 1 >= 0.5;
@@ -169,35 +217,67 @@ const HotelDetail = () => {
               )
           )}
         </div>
+
+        {/* Room available */}
         <p className="text-base font-medium mt-6">Room Available:</p>
         <div className="flex gap-4 mt-3">
-          <div className="border border-[#dcdcdd] p-3 rounded w-1/3 flex flex-col gap-3">
-            <h2 className="text-xl font-bold">Beach Hotel</h2>
-            <img src={hotel} alt="hotel" className="w-full h-[40vh]" />
-            <div className="grid grid-cols-2 gap-5">
-              {amnetiesOption.map((item, index) => (
-                <div className="flex gap-1 items-center rounded" key={index}>
-                  {item.icons}
-                  <label for={item?.value} className="cursor-pointer">
-                    {item?.label}
-                  </label>
-                </div>
-              ))}
+          {data?.data?.rooms?.map((room, roomIndex) => (
+            <div
+              className="border border-[#dcdcdd] p-3 rounded w-1/3 flex flex-col gap-3"
+              key={roomIndex}
+            >
+              <h2 className="text-xl font-bold">{room.title}</h2>
+              <img
+                src={`${import.meta.env.VITE_IMAGE_URL}/${room?.image}`}
+                alt="hotel"
+                className="w-full h-[40vh]"
+              />
+              <div className="grid grid-cols-2 gap-5">
+                {existingAmenities.map(
+                  (amnety, amnetyIndex) =>
+                    amnety.exist && (
+                      <div
+                        className="flex gap-1 items-center rounded"
+                        key={amnetyIndex}
+                      >
+                        {amnety.icons}
+                        <label
+                          htmlFor={amnety.value}
+                          className="cursor-pointer"
+                        >
+                          {amnety.label}
+                        </label>
+                      </div>
+                    )
+                )}
+              </div>
+              <hr />
+              <p>
+                Room Price:{" "}
+                <span className="font-semibold">Rs {room?.roomPrice} </span>
+                /24hrs
+              </p>
+              <div className="flex justify-between items-center">
+                <p className="flex items-center gap-1">
+                  <FaBed />
+                  Bed: {room?.bedCount}
+                </p>
+                <p className="flex items-center gap-1">
+                  <FaUsers />
+                  Guest: {room?.guestCount}
+                </p>
+              </div>
+              <hr />
+              <p>Select date that you will spend in this room</p>
+              <p>
+                Total Price: <span className="font-semibold">Rs 250 </span> for
+                <span className="font-semibold"> 1 days</span>
+              </p>
+              <div className="w-[70%]">
+                <Button btnName={"Book Now"} />
+              </div>
             </div>
-            <hr />
-            <p>
-              Room Price: <span className="font-semibold">Rs 250 </span>/24hrs
-            </p>
-            <hr />
-            <p>Select date that you will spend in this room</p>
-            <p>
-              Total Price: <span className="font-semibold">Rs 250 </span> for
-              <span className="font-semibold"> 1 days</span>
-            </p>
-            <div className="w-[70%]">
-              <Button btnName={"Book Now"} />
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Reviews */}
@@ -295,7 +375,7 @@ const HotelDetail = () => {
               <hr className="my-10" />
 
               {/* listed all reviews */}
-              <div className="mt-10">
+              <div className="mt-10 flex flex-col gap-5">
                 {data?.data?.ratings?.individualRatings?.map((item, index) => {
                   const full = Math.floor(item?.score || 0);
                   const half = (item?.score || 0) % 1 >= 0.5;
@@ -318,7 +398,7 @@ const HotelDetail = () => {
                           {Array.from({ length: full }, (_, index) => (
                             <FaStar key={index} fontSize={20} color="#FBC20B" />
                           ))}
-                          {hasHalfStar && (
+                          {half && (
                             <FaStarHalfAlt fontSize={20} color="#FBC20B" />
                           )}
                           {Array.from(
