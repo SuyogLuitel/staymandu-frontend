@@ -6,9 +6,11 @@ import { useForm } from "react-hook-form";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { FaStar } from "react-icons/fa";
 import Pagination from "../../components/Pagination";
+import { useHotelData } from "../../hooks/useQueryData";
 
 const Hotel = () => {
   const { register } = useForm();
+  const { data } = useHotelData();
 
   const options = [{ label: "abc", value: "abc" }];
 
@@ -158,10 +160,9 @@ const Hotel = () => {
         </div>
         <div className="w-[70%] flex flex-col gap-10">
           <div className="grid grid-cols-3 gap-8">
-            <HotelCard />
-            <HotelCard />
-            <HotelCard />
-            <HotelCard />
+            {data?.data?.map((item, index) => (
+              <HotelCard data={item} index={index} />
+            ))}
           </div>
           <div>
             <Pagination />

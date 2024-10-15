@@ -32,8 +32,13 @@ export const useMutate = (
   return mutation;
 };
 
-export const useLoginMutation = () =>
-  useMutate(["login"], "api/v1/user/login/");
+export const useLoginMutation = () => useMutate(["login"], "api/v1/user/login");
 
 export const useSignupMutation = () =>
-  useMutate(["signup"], "api/v1/user/register/");
+  useMutate(["signup"], "api/v1/user/register");
+
+export const useHotelMutation = () =>
+  useMutate(["hotel"], "api/v1/hotel/add", "multipart/form-data");
+
+export const useReviewMutation = () =>
+  useMutate(["review"], "api/v1/hotel/add-review");

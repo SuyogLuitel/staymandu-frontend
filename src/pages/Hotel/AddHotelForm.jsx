@@ -1,31 +1,75 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import LoginInput from "../../ui/LoginInput";
 import { BiHotel, BiLocationPlus } from "react-icons/bi";
 import SelectField from "../../ui/SelectField";
 import Button from "../../ui/Button";
+import { useHotelMutation } from "../../hooks/useMutateData";
+import toast from "react-hot-toast";
+import { useAuthStore } from "../../store/useAuthStore";
 
 const hotelSchema = Yup.object().shape({
   title: Yup.string().required("Hotel name is required"),
+  type: Yup.string().required("Hotel type is required"),
+  description: Yup.string().required("Description is required"),
+  locationDescription: Yup.string().required(
+    "Location Description is required"
+  ),
+  country: Yup.string().required("Country is required"),
+  province: Yup.string().required("Province is required"),
   city: Yup.string().required("City is required"),
+  gym: Yup.boolean(),
+  spa: Yup.boolean(),
+  bar: Yup.boolean(),
+  laundry: Yup.boolean(),
+  restaurant: Yup.boolean(),
+  shopping: Yup.boolean(),
+  freeParking: Yup.boolean(),
+  bikeRental: Yup.boolean(),
+  freeWifi: Yup.boolean(),
+  movieNight: Yup.boolean(),
+  swimmingPool: Yup.boolean(),
+  coffeeShop: Yup.boolean(),
 });
 
 const AddHotelForm = () => {
+  const { user } = useAuthStore();
+  const [imagePreview, setImagePreview] = useState(null);
+  const [selectedImage, setselectedImage] = useState(null);
+
   const {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(hotelSchema),
   });
 
-  const options = [{ label: "abc", value: "abc" }];
+  const typeOptions = [
+    { label: "Hotel", value: "Hotel" },
+    { label: "Appartment", value: "Appartment" },
+    { label: "Resort", value: "Resort" },
+    { label: "Villa", value: "Villa" },
+  ];
 
-  const amnetiesOption = [
+  const countryOptions = [{ label: "Nepal", value: "Nepal" }];
+
+  const provinceOptions = [
+    { label: "Koshi", value: "Koshi" },
+    { label: "Madhesh", value: "Madhesh" },
+    { label: "Bagmati", value: "Bagmati" },
+    { label: "Gandaki", value: "Gandaki" },
+    { label: "Lumbini", value: "Lumbini" },
+    { label: "Karnali", value: "Karnali" },
+    { label: "Sudurpashchim", value: "Sudurpashchim" },
+  ];
+
+  const amenitiesOptions = [
     { label: "Gym", value: "gym" },
     { label: "Bar", value: "bar" },
     { label: "Laundry", value: "laundry" },
@@ -39,7 +83,49 @@ const AddHotelForm = () => {
     { label: "Coffee Shop", value: "coffeeShop" },
   ];
 
-  const onSubmit = () => {};
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setselectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const hotelMutation = useHotelMutation();
+
+  const onSubmit = (data) => {
+    const formData = new FormData();
+    formData.append("userId", user?.data?._id);
+    formData.append("title", data.title);
+    formData.append("type", data.type);
+    formData.append("image", selectedImage);
+    formData.append("description", data.description);
+    formData.append("country", data.country);
+    formData.append("province", data.province);
+    formData.append("city", data.city);
+    formData.append("locationDescription", data.locationDescription);
+
+    amenitiesOptions.forEach(({ value }) => {
+      formData.append(value, data[value]);
+    });
+
+    hotelMutation.mutateAsync(["post", "", formData], {
+      onSuccess: (response) => {
+        // navigate("/");
+        toast.success("Hotel added successfully");
+        reset();
+        setselectedImage(null);
+        setImagePreview(null);
+      },
+      onError: (error) => {
+        toast.error(error?.response?.data?.message);
+      },
+    });
+  };
 
   return (
     <div className="pt-12 px-20 flex flex-col gap-8 bg-secondary">
@@ -59,36 +145,65 @@ const AddHotelForm = () => {
                 {errors?.title?.message}
               </p>
             </div>
-            <SelectField
-              label={"Select Hotel Type"}
-              options={options}
-              placeholder={"Select hotel type"}
-              className="w-full"
+            <Controller
+              name="type"
+              control={control}
+              render={({ field }) => (
+                <SelectField
+                  required
+                  {...field}
+                  label={"Select Hotel Type"}
+                  options={typeOptions}
+                  placeholder={"Select hotel type"}
+                  className="w-full"
+                  errorMessage={errors?.type?.message}
+                />
+              )}
             />
+            <div>
+              <label className="text-[16px] mb-1">Hotel Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="w-full p-2 border border-[#8E8E93] rounded"
+              />
+              {imagePreview && (
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="mt-2 w-full h-40 object-cover"
+                />
+              )}
+              <p className="text-red-600 text-sm mt-1">
+                {errors?.image?.message}
+              </p>
+            </div>
             <div className="flex flex-col gap-[6px]">
               <label className="text-[16px]">Hotel Description</label>
               <textarea
+                {...register("description")}
                 className="px-2 py-3 border h-20 border-[#8E8E93] outline-none resize-none hover:border-gray-800 focus-within:border-gray-800 rounded"
                 placeholder="Enter hotel description"
               ></textarea>
+              <p className="text-red-600">{errors?.description?.message}</p>
             </div>
             <div className="flex flex-col gap-[6px]">
-              <label className="text-[16px] mb-1">Select Amneties</label>
+              <label className="text-[16px] mb-1">Select Amenities</label>
               <div className="grid grid-cols-2 gap-5">
-                {amnetiesOption.map((item, index) => (
+                {amenitiesOptions.map((item) => (
                   <div
                     className="flex gap-1 items-center border border-[#8E8E93] p-3 rounded"
-                    key={index}
+                    key={item.value}
                   >
                     <input
                       type="checkbox"
-                      id={item?.value}
-                      name={item?.value}
-                      value="Bike"
+                      id={item.value}
+                      {...register(item.value)}
                       className="w-4 h-4"
                     />
-                    <label for={item?.value} className="cursor-pointer">
-                      {item?.label}
+                    <label htmlFor={item.value} className="cursor-pointer">
+                      {item.label}
                     </label>
                   </div>
                 ))}
@@ -97,17 +212,35 @@ const AddHotelForm = () => {
           </div>
           <div className="flex flex-col gap-3">
             <div className="grid grid-cols-2 gap-2">
-              <SelectField
-                label={"Select country"}
-                options={options}
-                placeholder={"Select country"}
-                className="w-full"
+              <Controller
+                name="country"
+                control={control}
+                render={({ field }) => (
+                  <SelectField
+                    required
+                    {...field}
+                    label={"Select country"}
+                    options={countryOptions}
+                    placeholder={"Select country"}
+                    className="w-full"
+                    errorMessage={errors?.country?.message}
+                  />
+                )}
               />
-              <SelectField
-                label={"Select Province"}
-                options={options}
-                placeholder={"Select province"}
-                className="w-full"
+              <Controller
+                name="province"
+                control={control}
+                render={({ field }) => (
+                  <SelectField
+                    required
+                    {...field}
+                    label={"Select Province"}
+                    options={provinceOptions}
+                    placeholder={"Select province"}
+                    className="w-full"
+                    errorMessage={errors?.province?.message}
+                  />
+                )}
               />
             </div>
             <div>
@@ -130,9 +263,13 @@ const AddHotelForm = () => {
             <div className="flex flex-col gap-[6px]">
               <label className="text-[16px]">Hotel Location Description</label>
               <textarea
+                {...register("locationDescription")}
                 className="px-2 py-3 border h-20 border-[#8E8E93] outline-none resize-none hover:border-gray-800 focus-within:border-gray-800 rounded"
                 placeholder="Enter hotel location description"
               ></textarea>
+              <p className="text-red-600">
+                {errors?.locationDescription?.message}
+              </p>
             </div>
             <div className="flex justify-end mt-4">
               <Button btnName={"Add Hotel"} />
