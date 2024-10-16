@@ -31,26 +31,31 @@ const HotelCard = ({ data, index }) => {
           <IoLocationOutline />
           <p>{`${data?.city}, ${data?.country}`}</p>
         </div>
-        <div className="text-base font-semibold">
+        <div className="text-lg font-semibold">
           Rs {data?.rooms[0]?.roomPrice}
         </div>
-        <div className="flex gap-1">
-          {Array.from({ length: fullStars }, (_, index) => (
-            <FaStar key={index} fontSize={20} color="#FBC20B" />
-          ))}
-          {hasHalfStar && <FaStarHalfAlt fontSize={20} color="#FBC20B" />}
-          {Array.from(
-            { length: 5 - fullStars - (hasHalfStar ? 1 : 0) },
-            (_, index) => (
-              <FaRegStar
-                key={index + fullStars + (hasHalfStar ? 1 : 0)}
-                fontSize={20}
-                color="#FBC20B"
-              />
-            )
-          )}
-          ( {data?.ratings?.totalRating}{" "}
-          {data?.ratings?.totalRating > 1 ? "ratings" : "rating"} )
+        <div className="flex flex-col gap-1">
+          <div className="flex gap-1">
+            {Array.from({ length: fullStars }, (_, index) => (
+              <FaStar key={index} fontSize={20} color="#FBC20B" />
+            ))}
+            {hasHalfStar && <FaStarHalfAlt fontSize={20} color="#FBC20B" />}
+            {Array.from(
+              { length: 5 - fullStars - (hasHalfStar ? 1 : 0) },
+              (_, index) => (
+                <FaRegStar
+                  key={index + fullStars + (hasHalfStar ? 1 : 0)}
+                  fontSize={20}
+                  color="#FBC20B"
+                />
+              )
+            )}
+            ({data?.ratings?.averageRating})
+          </div>
+          <p>
+            ( {data?.ratings?.totalRating}{" "}
+            {data?.ratings?.totalRating > 1 ? "ratings" : "rating"} )
+          </p>
         </div>
         {location.pathname === "/myProfile" && (
           <div className="flex items-center gap-2 mt-4">

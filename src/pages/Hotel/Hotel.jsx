@@ -117,7 +117,7 @@ const Hotel = () => {
         hotel.city.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesRating =
         selectedRating !== null
-          ? hotel.ratings.averageRating === selectedRating
+          ? Math.floor(hotel.ratings.averageRating) === selectedRating
           : true;
       const matchesType =
         selectedType !== null ? hotel.type === selectedType : true;
