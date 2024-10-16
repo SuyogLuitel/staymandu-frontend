@@ -249,7 +249,7 @@ const Hotel = () => {
           {/* Hotel List */}
           <div className="w-[70%] flex flex-col gap-10 justify-between">
             {filteredData?.length > 0 ? (
-              <div className="grid grid-cols-3 gap-8">
+              <div className="grid grid-cols-3 gap-4">
                 {filteredData.map((item, index) => (
                   <HotelCard data={item} index={index} key={index} />
                 ))}
