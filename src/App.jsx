@@ -11,11 +11,13 @@ import HotelDetail from "./pages/Hotel/HotelDetail";
 import { useAuthStore } from "./store/useAuthStore";
 import AddHotelForm from "./pages/Hotel/AddHotelForm";
 import AddRoomForm from "./pages/Hotel/AddRoomForm";
+import ScrollToTop from "./utils/ScrollToTop";
 
 const App = () => {
   const { loggedIn } = useAuthStore();
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
