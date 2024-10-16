@@ -7,12 +7,25 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { FaStar } from "react-icons/fa";
 import Pagination from "../../components/Pagination";
 import { useHotelData } from "../../hooks/useQueryData";
+import loading from "../../assets/loading.svg";
 
 const Hotel = () => {
   const { register } = useForm();
-  const { data } = useHotelData();
+  const { data, isLoading } = useHotelData();
 
-  const options = [{ label: "abc", value: "abc" }];
+  const typeOptions = [
+    { label: "Hotel", value: "Hotel" },
+    { label: "Appartment", value: "Appartment" },
+    { label: "Resort", value: "Resort" },
+    { label: "Villa", value: "Villa" },
+  ];
+
+  const viewOptions = [
+    { label: "City View", value: "cityView" },
+    { label: "Ocean View", value: "oceanView" },
+    { label: "Forest View", value: "forestView" },
+    { label: "Mountain View", value: "mountainView" },
+  ];
 
   const amnetiesOption = [
     { label: "Gym", value: "gym" },
@@ -107,9 +120,13 @@ const Hotel = () => {
               Filter by property type
             </h2>
             <SelectField
-              options={options}
+              options={typeOptions}
               placeholder={"Select property type"}
             />
+          </div>
+          <div className="flex flex-col gap-2">
+            <h2 className="text-xl font-bold text-[#343434]">Filter by view</h2>
+            <SelectField options={viewOptions} placeholder={"Select view"} />
           </div>
           <div className="flex flex-col gap-2 rounded">
             <h2 className="text-xl font-bold text-[#343434]">
@@ -158,7 +175,7 @@ const Hotel = () => {
             ))}
           </div>
         </div>
-        <div className="w-[70%] flex flex-col gap-10">
+        <div className="w-[70%] flex flex-col gap-10 justify-between">
           <div className="grid grid-cols-3 gap-8">
             {data?.data?.map((item, index) => (
               <HotelCard data={item} index={index} />
