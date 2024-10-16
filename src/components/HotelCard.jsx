@@ -3,6 +3,7 @@ import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoLocationOutline } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
+import { truncateText } from "../utils/truncateText";
 
 const HotelCard = ({ data, index }) => {
   const navigate = useNavigate();
@@ -26,12 +27,14 @@ const HotelCard = ({ data, index }) => {
       </div>
       <div className="p-4 flex flex-col gap-2">
         <h2 className="text-xl font-bold">{data?.title}</h2>
-        <p className="text-sm">{data?.description}</p>
+        <p className="text-sm">{truncateText(data?.description)}</p>
         <div className="flex items-center gap-1 text-sm">
           <IoLocationOutline />
           <p>{`${data?.city}, ${data?.country}`}</p>
         </div>
-        <div className="text-base font-semibold">Rs 1400</div>
+        <div className="text-base font-semibold">
+          Rs {data?.rooms[0]?.roomPrice}
+        </div>
         <div className="flex gap-1">
           {Array.from({ length: fullStars }, (_, index) => (
             <FaStar key={index} fontSize={20} color="#FBC20B" />

@@ -270,8 +270,9 @@ const HotelDetail = () => {
               <hr />
               <p>Select date that you will spend in this room</p>
               <p>
-                Total Price: <span className="font-semibold">Rs 250 </span> for
-                <span className="font-semibold"> 1 days</span>
+                Total Price:{" "}
+                <span className="font-semibold">Rs {room?.roomPrice} </span> for
+                <span className="font-semibold"> 1 day</span>
               </p>
               <div className="w-[70%]">
                 <Button btnName={"Book Now"} />

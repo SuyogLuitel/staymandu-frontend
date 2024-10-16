@@ -3,6 +3,7 @@ import Hero from "./Hero";
 import BrowseByType from "./BrowseByType";
 import PopularDeals from "./PopularDeals";
 import PopularDestination from "./PopularDestination";
+import Newsletter from "../../components/Newsletter";
 
 const Home = () => {
   return (
@@ -11,6 +12,7 @@ const Home = () => {
       <BrowseByType />
       <PopularDeals />
       <PopularDestination />
+      <Newsletter />
     </div>
   );
 };

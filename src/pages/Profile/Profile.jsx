@@ -9,6 +9,7 @@ import Favorites from "./Favorites";
 import MyHotel from "./MyHotel";
 import BookingHistory from "./BookingHistory";
 import { useLocation } from "react-router-dom";
+import ChangePassword from "./ChangePassword";
 
 const Profile = () => {
   const location = useLocation();
@@ -87,6 +88,8 @@ const Profile = () => {
           <MyHotel />
         ) : active === 3 ? (
           <BookingHistory />
+        ) : active === 4 ? (
+          <ChangePassword />
         ) : (
           <></>
         )}

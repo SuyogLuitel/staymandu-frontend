@@ -98,7 +98,7 @@ const AddRoomForm = () => {
   };
 
   return (
-    <div className="pt-12 px-20 flex flex-col gap-8 bg-secondary">
+    <div className="py-12 px-20 flex flex-col gap-8 bg-secondary">
       <h2 className="text-2xl font-bold">Describe your room for {name}</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-10">
