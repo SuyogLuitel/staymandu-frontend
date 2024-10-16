@@ -1,18 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import HotelCard from "../../components/HotelCard";
 import SelectField from "../../ui/SelectField";
 import LoginInput from "../../ui/LoginInput";
 import { useForm } from "react-hook-form";
 import { HiMagnifyingGlass } from "react-icons/hi2";
-import { FaStar } from "react-icons/fa";
+import { FaRegStar, FaStar } from "react-icons/fa";
 import Pagination from "../../components/Pagination";
 import { useHotelData } from "../../hooks/useQueryData";
-import loading from "../../assets/loading.svg";
 import Newsletter from "../../components/Newsletter";
+import loader from "../../assets/loader.gif";
+import Button from "../../ui/Button";
 
 const Hotel = () => {
   const { register } = useForm();
-  const { data, isLoading } = useHotelData();
+  const { data } = useHotelData();
+
+  // State for search input, rating filter, and selected amenities
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRating, setSelectedRating] = useState(null);
+  const [selectedType, setSelectedType] = useState(null);
+  const [selectedAmenities, setSelectedAmenities] = useState({});
 
   const typeOptions = [
     { label: "Hotel", value: "Hotel" },
@@ -21,14 +28,7 @@ const Hotel = () => {
     { label: "Villa", value: "Villa" },
   ];
 
-  const viewOptions = [
-    { label: "City View", value: "cityView" },
-    { label: "Ocean View", value: "oceanView" },
-    { label: "Forest View", value: "forestView" },
-    { label: "Mountain View", value: "mountainView" },
-  ];
-
-  const amnetiesOption = [
+  const amenitiesOption = [
     { label: "Gym", value: "gym" },
     { label: "Bar", value: "bar" },
     { label: "Laundry", value: "laundry" },
@@ -36,7 +36,7 @@ const Hotel = () => {
     { label: "Shopping", value: "shopping" },
     { label: "Free Parking", value: "freeParking" },
     { label: "Bike Rental", value: "bikeRental" },
-    { label: "Free wifi", value: "freewifi" },
+    { label: "Free Wifi", value: "freeWifi" },
     { label: "Movie Night", value: "movieNight" },
     { label: "Swimming Pool", value: "swimmingPool" },
     { label: "Coffee Shop", value: "coffeeShop" },
@@ -93,12 +93,58 @@ const Hotel = () => {
       id: 5,
       label: (
         <div className="flex gap-1 items-center font-normal">
-          <FaStar color="#FBC20B" />( 1 stars )
+          <FaStar color="#FBC20B" />( 1 star )
         </div>
       ),
       value: 1,
     },
+    {
+      id: 6,
+      label: (
+        <div className="flex gap-1 items-center font-normal">
+          <FaRegStar color="#FBC20B" />( 0 star )
+        </div>
+      ),
+      value: 0,
+    },
   ];
+
+  // Filter hotels based on search term, selected rating, type, and amenities
+  const filteredData = data?.data
+    ?.filter((hotel) => {
+      const matchesSearchTerm =
+        hotel.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        hotel.city.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesRating =
+        selectedRating !== null
+          ? hotel.ratings.averageRating === selectedRating
+          : true;
+      const matchesType =
+        selectedType !== null ? hotel.type === selectedType : true;
+      const matchesAmenities = Object.keys(selectedAmenities).length
+        ? Object.entries(selectedAmenities).every(([key, value]) =>
+            value ? hotel[key] === true : true
+          )
+        : true;
+
+      return (
+        matchesSearchTerm && matchesRating && matchesType && matchesAmenities
+      );
+    })
+    ?.sort((a, b) => {
+      if (b.ratings.averageRating !== a.ratings.averageRating) {
+        return b.ratings.averageRating - a.ratings.averageRating;
+      }
+      return b.ratings.totalRating - a.ratings.totalRating;
+    });
+
+  const handleAmenityChange = (event) => {
+    const { value, checked } = event.target;
+    setSelectedAmenities((prevState) => ({
+      ...prevState,
+      [value]: checked,
+    }));
+  };
 
   return (
     <>
@@ -108,38 +154,38 @@ const Hotel = () => {
           <LoginInput
             register={register}
             name={"search"}
-            labelName={"Search For Property"}
-            placeholder={"Enter property name"}
+            value={searchTerm}
+            labelName={"Search for Hotel"}
+            placeholder={"Search for property name or location"}
             icon={
               <HiMagnifyingGlass
                 fontSize={28}
                 className="text-[#8E8E93] pr-2"
               />
             }
+            onchange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <div className="flex">
           <div className="w-[30%] pr-10 flex flex-col gap-5">
+            {/* Property Type Filter */}
             <div className="flex flex-col gap-2">
               <h2 className="text-xl font-bold text-[#343434]">
                 Filter by property type
               </h2>
               <SelectField
                 options={typeOptions}
+                onChange={(e) => setSelectedType(e)}
                 placeholder={"Select property type"}
               />
             </div>
-            <div className="flex flex-col gap-2">
-              <h2 className="text-xl font-bold text-[#343434]">
-                Filter by view
-              </h2>
-              <SelectField options={viewOptions} placeholder={"Select view"} />
-            </div>
+
+            {/* Amenities Filter */}
             <div className="flex flex-col gap-2 rounded">
               <h2 className="text-xl font-bold text-[#343434]">
-                Filter by amneties
+                Filter by amenities
               </h2>
-              {amnetiesOption.map((item, index) => (
+              {amenitiesOption.map((item, index) => (
                 <div key={index} className="flex gap-3 items-center">
                   <input
                     type="checkbox"
@@ -147,17 +193,20 @@ const Hotel = () => {
                     name={item.value}
                     value={item.value}
                     className="w-4 h-4 rounded cursor-pointer"
+                    checked={!!selectedAmenities[item.value]}
+                    onChange={handleAmenityChange}
                   />
                   <label
                     htmlFor={item.value}
                     className="text-base font-medium text-[#343434] cursor-pointer"
                   >
-                    {" "}
                     {item.label}
                   </label>
                 </div>
               ))}
             </div>
+
+            {/* Rating Filter */}
             <div className="flex flex-col gap-2 rounded">
               <h2 className="text-xl font-bold text-[#343434]">
                 Filter by rating
@@ -165,32 +214,53 @@ const Hotel = () => {
               {ratingList.map((item, index) => (
                 <div key={index} className="flex gap-3 items-center">
                   <input
-                    type="checkbox"
+                    type="radio"
                     id={item.value}
-                    name={item.value}
+                    name="rating"
                     value={item.value}
+                    checked={selectedRating === item.value}
                     className="w-4 h-4 rounded cursor-pointer"
+                    onChange={() => setSelectedRating(item.value)}
                   />
                   <label
                     htmlFor={item.value}
                     className="text-base font-medium text-[#343434] cursor-pointer"
                   >
-                    {" "}
                     {item.label}
                   </label>
                 </div>
               ))}
             </div>
+
+            {/* Clear Button */}
+            <div className="w-40 mt-4">
+              <Button
+                btnName={"Clear"}
+                btnClick={() => {
+                  setSearchTerm("");
+                  setSelectedRating(null);
+                  setSelectedType(null);
+                  setSelectedAmenities({});
+                }}
+              />
+            </div>
           </div>
+
+          {/* Hotel List */}
           <div className="w-[70%] flex flex-col gap-10 justify-between">
-            <div className="grid grid-cols-3 gap-8">
-              {data?.data?.map((item, index) => (
-                <HotelCard data={item} index={index} />
-              ))}
-            </div>
-            <div>
-              <Pagination />
-            </div>
+            {filteredData?.length > 0 ? (
+              <div className="grid grid-cols-3 gap-8">
+                {filteredData.map((item, index) => (
+                  <HotelCard data={item} index={index} key={index} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3 items-center justify-center mt-20">
+                <img src={loader} alt="loader" />
+                No hotel to show...
+              </div>
+            )}
+            <Pagination />
           </div>
         </div>
       </div>

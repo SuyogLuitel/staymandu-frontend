@@ -39,13 +39,13 @@ export default function SelectField({
       </label>
       <div className="flex flex-col">
         <Select
-          // defaultValue={defaultValue}
+          defaultValue={defaultValue}
           placeholder={placeholder}
           options={options}
           styles={customStyles}
           onChange={(selectedOption) => onChange(selectedOption?.value)}
           className={`${className}`}
-          isClearable
+          // isClearable
         />
         {errorMessage && <p className="text-red-600 text-sm">{errorMessage}</p>}
       </div>

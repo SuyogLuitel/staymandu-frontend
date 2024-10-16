@@ -9,9 +9,11 @@ const LoginInput = ({
   register,
   required,
   defaultValue,
+  value,
   className,
   icon,
   disabled,
+  onchange,
 }) => {
   const [passwordType, setPasswordType] = useState("password");
   return (
@@ -26,11 +28,13 @@ const LoginInput = ({
         <input
           id={name}
           disabled={disabled}
+          value={value}
           type={type === "password" ? passwordType : type}
           placeholder={placeholder}
           min={type === "number" && 1}
           className="w-full outline-none bg-inherit"
           {...register(name)}
+          onChange={onchange}
           defaultValue={defaultValue}
         />
         {type === "password" && (

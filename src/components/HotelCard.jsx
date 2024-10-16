@@ -2,7 +2,6 @@ import React from "react";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoLocationOutline } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
-import Button from "../ui/Button";
 import { truncateText } from "../utils/truncateText";
 
 const HotelCard = ({ data, index }) => {
@@ -18,11 +17,11 @@ const HotelCard = ({ data, index }) => {
       onClick={() => navigate(`/hotel/${data?._id}`)}
       key={index}
     >
-      <div>
+      <div className="h-1/2">
         <img
           src={`${import.meta.env.VITE_IMAGE_URL}/${data.image}`}
           alt="hotel"
-          className="rounded w-full"
+          className="rounded w-full h-full"
         />
       </div>
       <div className="p-4 flex flex-col gap-2">
@@ -50,6 +49,8 @@ const HotelCard = ({ data, index }) => {
               />
             )
           )}
+          ( {data?.ratings?.totalRating}{" "}
+          {data?.ratings?.totalRating > 1 ? "ratings" : "rating"} )
         </div>
         {location.pathname === "/myProfile" && (
           <div className="flex items-center gap-2 mt-4">
