@@ -2,6 +2,7 @@ import React from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useHotelDataByUserId } from "../../hooks/useQueryData";
 import HotelCard from "../../components/HotelCard";
+import loader from "../../assets/loader.gif";
 
 const MyHotel = () => {
   const { user } = useAuthStore();
@@ -19,7 +20,10 @@ const MyHotel = () => {
           </div>
         </div>
       ) : (
-        <div>Your hotels will appear here...</div>
+        <div className="flex flex-col gap-3 items-center justify-center mt-20">
+          <img src={loader} alt="loader" />
+          Your hotels will appear here...
+        </div>
       )}
     </>
   );
