@@ -11,10 +11,12 @@ const HotelCard = ({ data, index }) => {
   const fullStars = Math.floor(data?.ratings?.averageRating);
   const hasHalfStar = data?.ratings?.averageRating % 1 >= 0.5;
 
+  const isAdmin = location.pathname === "/myProfile" ? { admin: "true" } : {};
+
   return (
     <div
       className="flex flex-col border rounded cursor-pointer hover:mt-1"
-      onClick={() => navigate(`/hotel/${data?._id}`)}
+      onClick={() => navigate(`/hotel/${data?._id}`, { state: isAdmin })}
       key={index}
     >
       <div className="h-1/2">

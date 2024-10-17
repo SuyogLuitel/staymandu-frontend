@@ -45,3 +45,6 @@ export const useRoomMutation = () =>
 
 export const useReviewMutation = () =>
   useMutate(["review"], "api/v1/hotel/add-review");
+
+export const useBookingMutation = () =>
+  useMutate(["book"], "api/v1/hotel/book-hotel");
