@@ -16,8 +16,8 @@ export const useQueryData = (key, path, params = "", enabled = true) => {
   });
 };
 
-export const useHotelData = () =>
-  useQueryData(["hotel"], `api/v1/hotel/list`, "");
+export const useHotelData = (sortBy) =>
+  useQueryData(["hotel", sortBy], `api/v1/hotel/list?sortBy=${sortBy}`, "");
 
 export const useSpecificHotelData = (id) =>
   useQueryData(["hotelById", id], `api/v1/hotel/${id}`, "");

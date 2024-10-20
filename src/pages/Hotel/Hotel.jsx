@@ -12,14 +12,15 @@ import loader from "../../assets/loader.gif";
 import Button from "../../ui/Button";
 
 const Hotel = () => {
-  const { register } = useForm();
-  const { data } = useHotelData();
-
   // State for search input, rating filter, and selected amenities
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRating, setSelectedRating] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
   const [selectedAmenities, setSelectedAmenities] = useState({});
+  const [sortBy, setSortBy] = useState("default");
+
+  const { register } = useForm();
+  const { data } = useHotelData(sortBy);
 
   const typeOptions = [
     { label: "Hotel", value: "Hotel" },
@@ -109,35 +110,6 @@ const Hotel = () => {
     },
   ];
 
-  // Filter hotels based on search term, selected rating, type, and amenities
-  const filteredData = data?.data
-    ?.filter((hotel) => {
-      const matchesSearchTerm =
-        hotel.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        hotel.city.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesRating =
-        selectedRating !== null
-          ? Math.floor(hotel.ratings.averageRating) === selectedRating
-          : true;
-      const matchesType =
-        selectedType !== null ? hotel.type === selectedType : true;
-      const matchesAmenities = Object.keys(selectedAmenities).length
-        ? Object.entries(selectedAmenities).every(([key, value]) =>
-            value ? hotel[key] === true : true
-          )
-        : true;
-
-      return (
-        matchesSearchTerm && matchesRating && matchesType && matchesAmenities
-      );
-    })
-    ?.sort((a, b) => {
-      if (b.ratings.averageRating !== a.ratings.averageRating) {
-        return b.ratings.averageRating - a.ratings.averageRating;
-      }
-      return b.ratings.totalRating - a.ratings.totalRating;
-    });
-
   const handleAmenityChange = (event) => {
     const { value, checked } = event.target;
     setSelectedAmenities((prevState) => ({
@@ -146,25 +118,74 @@ const Hotel = () => {
     }));
   };
 
+  const filteredHotels = data?.data?.filter((hotel) => {
+    const matchesSearchTerm =
+      hotel.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      hotel.city.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesType =
+      selectedType !== null ? hotel.type === selectedType : true;
+
+    const matchesRating =
+      selectedRating !== null
+        ? Math.floor(hotel.ratings.averageRating) === selectedRating
+        : true;
+
+    const matchesAmenities = Object.keys(selectedAmenities).length
+      ? Object.entries(selectedAmenities).every(([key, value]) =>
+          value ? hotel[key] === true : true
+        )
+      : true;
+
+    return (
+      matchesSearchTerm && matchesType && matchesRating && matchesAmenities
+    );
+  });
+  // // Sort based on selected sorting criteria
+  // .sort((a, b) => {
+  //   if (sortBy === "latest") return new Date(b.date) - new Date(a.date);
+  //   if (sortBy === "maxPrice") return b.price - a.price;
+  //   if (sortBy === "minPrice") return a.price - b.price;
+  //   if (sortBy === "rating") return b.rating - a.rating;
+  //   return 0;
+  // });
+
   return (
     <>
       <div className="py-10 px-20 flex flex-col gap-8 bg-secondary">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">All Hotels</h2>
-          <LoginInput
-            register={register}
-            name={"search"}
-            value={searchTerm}
-            labelName={"Search for Hotel"}
-            placeholder={"Search for property name or location"}
-            icon={
-              <HiMagnifyingGlass
-                fontSize={28}
-                className="text-[#8E8E93] pr-2"
-              />
-            }
-            onchange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="flex mb-4">
+          <h2 className="text-2xl font-bold w-[30%]">All Hotels</h2>
+          <div className="flex items-center justify-between w-[70%]">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="sortBy">Sort by</label>
+              <select
+                id="sortBy"
+                className="border p-1 border-[#8E8E93] rounded cursor-pointer"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="default">Default</option>
+                <option value="latest">Latest</option>
+                <option value="maxPrice">Max Price</option>
+                <option value="minPrice">Min Price</option>
+                <option value="rating">Rating</option>
+              </select>
+            </div>
+            <LoginInput
+              register={register}
+              name={"search"}
+              value={searchTerm}
+              labelName={"Search for Hotel"}
+              placeholder={"Search for property name or location"}
+              icon={
+                <HiMagnifyingGlass
+                  fontSize={28}
+                  className="text-[#8E8E93] pr-2"
+                />
+              }
+              onchange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
         </div>
         <div className="flex">
           <div className="w-[30%] pr-10 flex flex-col gap-5">
@@ -248,9 +269,9 @@ const Hotel = () => {
 
           {/* Hotel List */}
           <div className="w-[70%] flex flex-col gap-10 justify-between">
-            {filteredData?.length > 0 ? (
+            {filteredHotels?.length > 0 ? (
               <div className="grid grid-cols-3 gap-4">
-                {filteredData.map((item, index) => (
+                {filteredHotels?.map((item, index) => (
                   <HotelCard data={item} index={index} key={index} />
                 ))}
               </div>
