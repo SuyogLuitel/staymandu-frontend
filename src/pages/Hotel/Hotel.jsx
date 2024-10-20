@@ -18,9 +18,10 @@ const Hotel = () => {
   const [selectedType, setSelectedType] = useState(null);
   const [selectedAmenities, setSelectedAmenities] = useState({});
   const [sortBy, setSortBy] = useState("default");
+  const [page, setPage] = useState(1);
 
   const { register } = useForm();
-  const { data } = useHotelData(sortBy);
+  const { data } = useHotelData(page, sortBy);
 
   const typeOptions = [
     { label: "Hotel", value: "Hotel" },
@@ -141,14 +142,6 @@ const Hotel = () => {
       matchesSearchTerm && matchesType && matchesRating && matchesAmenities
     );
   });
-  // // Sort based on selected sorting criteria
-  // .sort((a, b) => {
-  //   if (sortBy === "latest") return new Date(b.date) - new Date(a.date);
-  //   if (sortBy === "maxPrice") return b.price - a.price;
-  //   if (sortBy === "minPrice") return a.price - b.price;
-  //   if (sortBy === "rating") return b.rating - a.rating;
-  //   return 0;
-  // });
 
   return (
     <>
@@ -262,6 +255,7 @@ const Hotel = () => {
                   setSelectedRating(null);
                   setSelectedType(null);
                   setSelectedAmenities({});
+                  setSortBy("default");
                 }}
               />
             </div>
@@ -281,7 +275,12 @@ const Hotel = () => {
                 No hotel to show...
               </div>
             )}
-            <Pagination />
+            <Pagination
+              totalPage={data?.totalPages}
+              currentPage={data?.currentPage}
+              page={page}
+              setPage={setPage}
+            />
           </div>
         </div>
       </div>
