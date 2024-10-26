@@ -284,7 +284,7 @@ const AddHotelForm = () => {
             {display && (
               <div className="flex items-center justify-between py-5 bg-blue-200 rounded-md px-5">
                 <div className="flex flex-col gap-1">
-                  <p>Room added sucessfully.🎉🎉</p>
+                  <p>Hotel added sucessfully.🎉🎉</p>
                   <p>One final thing now!!!</p>
                 </div>
                 <Button
