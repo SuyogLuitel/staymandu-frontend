@@ -212,10 +212,10 @@ const HotelDetail = () => {
     };
     bookingMutation.mutateAsync(["post", ``, postData], {
       onSuccess: (response) => {
-        toast.success("Hotel booked successfully");
         toast.success("Finish the payment to complete the booking");
         setRoomDateRanges({});
         setIsSubmitting(false);
+        window.location.replace(response.session_url);
       },
       onError: (error) => {
         toast.error("Hotel booking failed");

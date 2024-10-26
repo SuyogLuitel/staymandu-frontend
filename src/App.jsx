@@ -12,6 +12,7 @@ import { useAuthStore } from "./store/useAuthStore";
 import AddHotelForm from "./pages/Hotel/AddHotelForm";
 import AddRoomForm from "./pages/Hotel/AddRoomForm";
 import ScrollToTop from "./utils/ScrollToTop";
+import Verify from "./pages/Verify/Verify";
 
 const App = () => {
   const { loggedIn } = useAuthStore();
@@ -33,6 +34,7 @@ const App = () => {
           {loggedIn && (
             <>
               <Route path="/myProfile" element={<Profile />} />
+              <Route path="/verify" element={<Verify />} />
             </>
           )}
         </Route>
