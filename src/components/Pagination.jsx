@@ -18,9 +18,9 @@ const Pagination = ({ totalPage, currentPage, page, setPage }) => {
       <div className="flex items-center gap-1">
         Page
         <div className="px-3 py-1 rounded bg-gray-100 flex cursor-pointer items-center">
-          {currentPage}
+          {currentPage ?? 1}
         </div>
-        of {totalPage}
+        of {totalPage ?? 1}
       </div>
       <div
         className={`px-3 py-2 rounded bg-gray-100 flex cursor-pointer items-center ${

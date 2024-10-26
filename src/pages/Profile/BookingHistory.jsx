@@ -11,14 +11,15 @@ const BookingHistory = () => {
 
   const { data } = useBookingDataByUserId(user?.data?._id);
 
+  const calculateDays = (startDate, endDate) => {
+    const diffTime = Math.abs(endDate - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays === 0 ? 1 : diffDays + 1;
+  };
+
   return (
     <div>
-      {data?.data?.length === 0 ? (
-        <div className="flex flex-col gap-3 items-center justify-center mt-20">
-          <img src={loader} alt="loader" />
-          Your booking history will appear here...
-        </div>
-      ) : (
+      {data?.data?.length >= 1 ? (
         <div>
           <h2 className="text-xl font-bold">Booking History</h2>
 
@@ -86,7 +87,7 @@ const BookingHistory = () => {
                     </div>
                   </div>
                   <button
-                    className={`bg-green-200 w-32 text-sm mt-4 py-2 font-bold rounded-md text-green-900`}
+                    className={` w-32 text-sm mt-4 py-2 font-bold rounded-md  bg-green-200 text-green-900 `}
                   >
                     Completed
                   </button>
@@ -94,6 +95,11 @@ const BookingHistory = () => {
               </div>
             ))}
           </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3 items-center justify-center mt-20">
+          <img src={loader} alt="loader" />
+          Your booking history will appear here...
         </div>
       )}
     </div>

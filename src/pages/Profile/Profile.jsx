@@ -40,6 +40,9 @@ const Profile = () => {
           >
             <FaRegHeart fontSize={24} />
             <span>Favorites</span>
+            <div className="bg-red-200 text-red-700 rounded-full w-7 h-7 flex justify-center text-sm items-center p-2">
+              8
+            </div>
           </li>
           <li
             className={`flex items-center space-x-2 cursor-pointer hover:bg-gray-200 p-2 rounded ${
