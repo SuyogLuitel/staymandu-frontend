@@ -40,6 +40,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { formatDate } from "../../utils/formatDate";
 import { addDays, isWithinInterval, format } from "date-fns";
+import defaultImg from "../../assets/default.jpg";
 
 const HotelDetail = () => {
   const location = useLocation();
@@ -227,9 +228,13 @@ const HotelDetail = () => {
   return (
     <div className="pt-6 px-20 flex flex-col gap-4 bg-secondary">
       <img
-        src={`${import.meta.env.VITE_IMAGE_URL}/${data?.data?.image}`}
+        src={
+          data?.data?.image !== "undefined"
+            ? `${import.meta.env.VITE_IMAGE_URL}/${data?.data?.image}`
+            : defaultImg
+        }
         alt="hotel"
-        className="w-full h-[70vh]"
+        className="w-[80vw] h-[70vh] rounded-md"
       />
       <div className="p-4 flex flex-col gap-2">
         <h2 className="text-2xl font-bold">{data?.data?.title}</h2>

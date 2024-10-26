@@ -3,6 +3,7 @@ import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoLocationOutline } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
 import { truncateText } from "../utils/truncateText";
+import defaultImg from "../assets/default.jpg";
 
 const HotelCard = ({ data, index }) => {
   const navigate = useNavigate();
@@ -21,7 +22,11 @@ const HotelCard = ({ data, index }) => {
     >
       <div className="h-1/2">
         <img
-          src={`${import.meta.env.VITE_IMAGE_URL}/${data.image}`}
+          src={
+            data.image !== "undefined"
+              ? `${import.meta.env.VITE_IMAGE_URL}/${data.image}`
+              : defaultImg
+          }
           alt="hotel"
           className="rounded w-full h-full"
         />

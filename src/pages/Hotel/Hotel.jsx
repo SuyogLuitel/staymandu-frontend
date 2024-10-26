@@ -239,7 +239,7 @@ const Hotel = () => {
                 <div className="flex items-center gap-2 mb-4">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 rounded cursor-pointer"
+                    className="w-5 h-5 rounded cursor-pointer"
                     name="geo"
                     id="geo"
                     checked={isNearest}
@@ -247,7 +247,7 @@ const Hotel = () => {
                   />
                   <label
                     htmlFor="geo"
-                    className="text-base font-medium text-[#465E95] cursor-pointer hover:underline"
+                    className="font-medium text-[#465E95] text-lg cursor-pointer hover:underline"
                   >
                     Hotels nearest to me
                   </label>
