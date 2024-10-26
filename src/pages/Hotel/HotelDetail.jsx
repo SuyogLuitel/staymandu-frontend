@@ -39,14 +39,16 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { formatDate } from "../../utils/formatDate";
-import { addDays, isWithinInterval, format } from "date-fns";
+import { format } from "date-fns";
 import defaultImg from "../../assets/default.jpg";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 const HotelDetail = () => {
   const location = useLocation();
   const { admin } = location.state || {};
   const { id } = useParams();
-  const { user, loggedIn } = useAuthStore();
+  const { user, loggedIn, favorites, addFavorite, removeFavorite } =
+    useAuthStore();
   const { data } = useSpecificHotelData(id);
   const [displayReview, setDisplayReview] = useState(false);
   const [rating, setRating] = useState(0);
@@ -55,6 +57,17 @@ const HotelDetail = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [roomDateRanges, setRoomDateRanges] = useState({});
   const [showCalendar, setShowCalendar] = useState({});
+
+  const isFavorite = favorites.some((fav) => fav?._id === data?.data?._id);
+
+  const handleFavoriteToggle = (event) => {
+    event.stopPropagation();
+    if (isFavorite) {
+      removeFavorite(data?.data?._id);
+    } else {
+      addFavorite(data?.data);
+    }
+  };
 
   const handleDateRangeChange = (roomIndex, selection) => {
     setRoomDateRanges((prevRanges) => ({
@@ -237,8 +250,25 @@ const HotelDetail = () => {
         className="w-[80vw] h-[70vh] rounded-md"
       />
       <div className="p-4 flex flex-col gap-2">
-        <h2 className="text-2xl font-bold">{data?.data?.title}</h2>
-        <div className="flex items-center gap-1 text-sm">
+        <div className="flex items-center justify-between w-[79vw]">
+          <h2 className="text-2xl font-bold">{data?.data?.title}</h2>
+          {admin === undefined && (
+            <div
+              className="flex items-center gap-2"
+              onClick={handleFavoriteToggle}
+            >
+              {isFavorite ? (
+                <FaHeart fontSize={22} color="#E92165" cursor={"pointer"} />
+              ) : (
+                <FaRegHeart fontSize={22} color="#1D293B" cursor={"pointer"} />
+              )}
+              <p className="text-lg text-[#1D293B] hover:underline cursor-pointer">
+                Add to favourite
+              </p>
+            </div>
+          )}
+        </div>
+        <div className="flex items-center gap-1 text-base">
           <IoLocationOutline />
           <p>{`${data?.data?.streetname}, ${data?.data?.city}, ${data?.data?.country}`}</p>
         </div>

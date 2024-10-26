@@ -14,6 +14,7 @@ import ChangePassword from "./ChangePassword";
 const Profile = () => {
   const location = useLocation();
   const { activeNum } = location.state || {};
+  const { favorites } = useAuthStore();
 
   const { logout } = useAuthStore();
   const [active, setActive] = useState(activeNum || 0);
@@ -41,7 +42,7 @@ const Profile = () => {
             <FaRegHeart fontSize={24} />
             <span>Favorites</span>
             <div className="bg-red-200 text-red-700 rounded-full w-7 h-7 flex justify-center text-sm items-center p-2">
-              8
+              {favorites?.length}
             </div>
           </li>
           <li

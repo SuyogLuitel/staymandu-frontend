@@ -15,7 +15,7 @@ const MyHotel = () => {
           <h2 className="text-xl font-bold">My Hotels</h2>
           <div className="grid grid-cols-4 gap-8 mt-8">
             {data?.data?.map((item, index) => (
-              <HotelCard data={item} index={index} />
+              <HotelCard data={item} index={index} admin={true} />
             ))}
           </div>
         </div>

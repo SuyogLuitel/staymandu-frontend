@@ -1,22 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoLocationOutline } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
 import { truncateText } from "../utils/truncateText";
 import defaultImg from "../assets/default.jpg";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { useAuthStore } from "../store/useAuthStore";
 
-const HotelCard = ({ data, index }) => {
+const HotelCard = ({ data, index, admin }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { favorites, addFavorite, removeFavorite } = useAuthStore();
 
   const fullStars = Math.floor(data?.ratings?.averageRating);
   const hasHalfStar = data?.ratings?.averageRating % 1 >= 0.5;
 
-  const isAdmin = location.pathname === "/myProfile" ? { admin: "true" } : {};
+  const isAdmin =
+    location.pathname === "/myProfile" && admin ? { admin: "true" } : {};
+
+  const isFavorite = favorites.some((fav) => fav?._id === data?._id);
+
+  const handleFavoriteToggle = (event) => {
+    event.stopPropagation();
+    if (isFavorite) {
+      removeFavorite(data?._id);
+    } else {
+      addFavorite(data);
+    }
+  };
 
   return (
     <div
-      className="flex flex-col border rounded cursor-pointer hover:mt-1"
+      className="relative flex flex-col border rounded cursor-pointer hover:mt-1"
       onClick={() => navigate(`/hotel/${data?._id}`, { state: isAdmin })}
       key={index}
     >
@@ -64,7 +79,7 @@ const HotelCard = ({ data, index }) => {
             {data?.ratings?.totalRating > 1 ? "ratings" : "rating"} )
           </p>
         </div>
-        {location.pathname === "/myProfile" && (
+        {location.pathname === "/myProfile" && admin && (
           <div className="flex items-center gap-2 mt-4">
             <button
               className="py-2 px-3 text-white text-sm bg-[#1D293B] hover:bg-[#2c3b52] rounded"
@@ -89,6 +104,18 @@ const HotelCard = ({ data, index }) => {
           </div>
         )}
       </div>
+      {(location.pathname !== "/myProfile" || admin !== true) && (
+        <div
+          className="bg-white flex items-center justify-center p-2 absolute top-2 right-3 rounded-md"
+          onClick={handleFavoriteToggle}
+        >
+          {isFavorite ? (
+            <FaHeart fontSize={20} color="#E92165" />
+          ) : (
+            <FaRegHeart fontSize={20} color="#1D293B" />
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -8,6 +8,7 @@ const cookies = new Cookies();
 const authStore = (set) => ({
   loggedIn: decryptedData(cookies.get("user"))?.token ? true : false,
   user: decryptedData(cookies.get("user")) || null,
+  favorites: decryptedData(cookies.get("favorites")) || [],
 
   setUser: (user) => {
     set(() => {
@@ -26,6 +27,26 @@ const authStore = (set) => ({
     });
     toast.success("Logout successfully");
   },
+
+  addFavorite: (hotel) =>
+    set((state) => {
+      if (!state.favorites.some((fav) => fav?._id === hotel?._id)) {
+        const newFavorites = [...state.favorites, hotel];
+        cookies.set("favorites", encryptData(newFavorites));
+        toast.success(`Hotel added to favorites!`);
+        return { favorites: newFavorites };
+      }
+    }),
+
+  removeFavorite: (hotelId) =>
+    set((state) => {
+      const updatedFavorites = state.favorites.filter(
+        (hotel) => hotel?._id !== hotelId
+      );
+      cookies.set("favorites", encryptData(updatedFavorites));
+      toast.success("Removed from favorites!");
+      return { favorites: updatedFavorites };
+    }),
 });
 
 export const useAuthStore = create(authStore);
