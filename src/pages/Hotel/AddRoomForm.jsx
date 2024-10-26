@@ -25,6 +25,7 @@ const AddRoomForm = () => {
   const { id, name } = location.state || {};
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedImage, setselectedImage] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -68,6 +69,7 @@ const AddRoomForm = () => {
   const roomMutation = useRoomMutation();
 
   const onSubmit = (data) => {
+    setIsSubmitting(true);
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("roomPrice", data.roomPrice);
@@ -90,9 +92,11 @@ const AddRoomForm = () => {
         reset();
         setselectedImage(null);
         setImagePreview(null);
+        setIsSubmitting(false);
       },
       onError: (error) => {
         toast.error(error?.response?.data?.message);
+        setIsSubmitting(false);
       },
     });
   };
@@ -226,7 +230,9 @@ const AddRoomForm = () => {
                 ))}
               </div>
               <div className="flex justify-end mt-4">
-                <Button btnName={"Add Room"} />
+                <Button
+                  btnName={isSubmitting ? "Adding Room..." : "Add Room"}
+                />
               </div>
             </div>
           </div>

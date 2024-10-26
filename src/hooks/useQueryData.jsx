@@ -23,6 +23,14 @@ export const useHotelData = (page, sortBy) =>
     ""
   );
 
+export const useNearestHotelData = (longitude, latitude, page, sortBy) =>
+  useQueryData(
+    ["nearest-hotel", longitude, latitude, page, sortBy],
+    `api/v1/hotel/nearest?longitude=${longitude}&latitude=${latitude}&page=${page}&sortBy=${sortBy}`,
+    "",
+    longitude !== null && latitude !== null
+  );
+
 export const useSpecificHotelData = (id) =>
   useQueryData(["hotelById", id], `api/v1/hotel/${id}`, "");
 

@@ -110,9 +110,9 @@ const HotelDetail = () => {
     },
     {
       label: "Free wifi",
-      value: "freewifi",
+      value: "freeWifi",
       icons: <MdOutlineSignalWifiStatusbar4Bar />,
-      exist: data?.data?.freewifi,
+      exist: data?.data?.freeWifi,
     },
     {
       label: "Movie Night",
@@ -220,7 +220,6 @@ const HotelDetail = () => {
       onError: (error) => {
         toast.error("Hotel booking failed");
         setIsSubmitting(false);
-        setIsSubmitting(false);
       },
     });
   };
@@ -236,7 +235,7 @@ const HotelDetail = () => {
         <h2 className="text-2xl font-bold">{data?.data?.title}</h2>
         <div className="flex items-center gap-1 text-sm">
           <IoLocationOutline />
-          <p>{`${data?.data?.city}, ${data?.data?.country}`}</p>
+          <p>{`${data?.data?.streetname}, ${data?.data?.city}, ${data?.data?.country}`}</p>
         </div>
         <div className="flex gap-1">
           {Array.from({ length: fullStars }, (_, index) => (

@@ -31,7 +31,7 @@ const HotelCard = ({ data, index }) => {
         <p className="text-sm">{truncateText(data?.description)}</p>
         <div className="flex items-center gap-1 text-sm">
           <IoLocationOutline />
-          <p>{`${data?.city}, ${data?.country}`}</p>
+          <p>{`${data?.streetname}, ${data?.city}`}</p>
         </div>
         <div className="text-lg font-semibold">
           Rs {data?.rooms[0]?.roomPrice}

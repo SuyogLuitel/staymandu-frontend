@@ -6,10 +6,12 @@ import { useForm } from "react-hook-form";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import Pagination from "../../components/Pagination";
-import { useHotelData } from "../../hooks/useQueryData";
+import { useHotelData, useNearestHotelData } from "../../hooks/useQueryData";
 import Newsletter from "../../components/Newsletter";
 import loader from "../../assets/loader.gif";
 import Button from "../../ui/Button";
+import toast from "react-hot-toast";
+import Tooltip from "../../components/Tooltip";
 
 const Hotel = () => {
   // State for search input, rating filter, and selected amenities
@@ -20,8 +22,45 @@ const Hotel = () => {
   const [sortBy, setSortBy] = useState("default");
   const [page, setPage] = useState(1);
 
+  const [isNearest, setIsNearest] = useState(false);
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
+
   const { register } = useForm();
-  const { data } = useHotelData(page, sortBy);
+  const { data } = isNearest
+    ? useNearestHotelData(location.longitude, location.latitude, page, sortBy)
+    : useHotelData(page, sortBy);
+
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          toast.error("Geolocation error:", error);
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              toast.error("Permission denied.");
+              break;
+            case error.POSITION_UNAVAILABLE:
+              toast.error("Position unavailable.");
+              break;
+            case error.TIMEOUT:
+              toast.error("Request timeout.");
+              break;
+            default:
+              toast.error("An unknown error occurred.");
+              break;
+          }
+        }
+      );
+    } else {
+      toast.error("Geolocation is not supported by this browser.");
+    }
+  };
 
   const typeOptions = [
     { label: "Hotel", value: "Hotel" },
@@ -122,7 +161,8 @@ const Hotel = () => {
   const filteredHotels = data?.data?.filter((hotel) => {
     const matchesSearchTerm =
       hotel.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      hotel.city.toLowerCase().includes(searchTerm.toLowerCase());
+      hotel.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      hotel.streetname.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesType =
       selectedType !== null ? hotel.type === selectedType : true;
@@ -142,6 +182,17 @@ const Hotel = () => {
       matchesSearchTerm && matchesType && matchesRating && matchesAmenities
     );
   });
+
+  const handleCheckboxChange = (e) => {
+    const isChecked = e.target.checked;
+    setIsNearest(isChecked);
+
+    if (isChecked) {
+      getLocation();
+    } else {
+      setLocation({ latitude: null, longitude: null });
+    }
+  };
 
   return (
     <>
@@ -184,6 +235,24 @@ const Hotel = () => {
           <div className="w-[30%] pr-10 flex flex-col gap-5">
             {/* Property Type Filter */}
             <div className="flex flex-col gap-2">
+              <Tooltip text="Hotel under 5000 meters will be displayed">
+                <div className="flex items-center gap-2 mb-4">
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 rounded cursor-pointer"
+                    name="geo"
+                    id="geo"
+                    checked={isNearest}
+                    onChange={handleCheckboxChange}
+                  />
+                  <label
+                    htmlFor="geo"
+                    className="text-base font-medium text-[#465E95] cursor-pointer hover:underline"
+                  >
+                    Hotels nearest to me
+                  </label>
+                </div>
+              </Tooltip>
               <h2 className="text-xl font-bold text-[#343434]">
                 Filter by property type
               </h2>

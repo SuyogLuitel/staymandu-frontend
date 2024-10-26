@@ -21,6 +21,10 @@ const hotelSchema = Yup.object().shape({
   country: Yup.string().required("Country is required"),
   province: Yup.string().required("Province is required"),
   city: Yup.string().required("City is required"),
+  streetname: Yup.string().required("Street Name is required"),
+  url: Yup.string().required("Google url is required"),
+  latitude: Yup.number().required("Latitude is required"),
+  longitude: Yup.number().required("Longitude is required"),
   gym: Yup.boolean(),
   spa: Yup.boolean(),
   bar: Yup.boolean(),
@@ -42,6 +46,7 @@ const AddHotelForm = () => {
   const [selectedImage, setselectedImage] = useState(null);
   const [display, setDisplay] = useState(false);
   const [response, setResponse] = useState();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -81,7 +86,7 @@ const AddHotelForm = () => {
     { label: "Shopping", value: "shopping" },
     { label: "Free Parking", value: "freeParking" },
     { label: "Bike Rental", value: "bikeRental" },
-    { label: "Free wifi", value: "freewifi" },
+    { label: "Free wifi", value: "freeWifi" },
     { label: "Movie Night", value: "movieNight" },
     { label: "Swimming Pool", value: "swimmingPool" },
     { label: "Coffee Shop", value: "coffeeShop" },
@@ -102,6 +107,7 @@ const AddHotelForm = () => {
   const hotelMutation = useHotelMutation();
 
   const onSubmit = (data) => {
+    setIsSubmitting(true);
     const formData = new FormData();
     formData.append("userId", user?.data?._id);
     formData.append("title", data.title);
@@ -111,6 +117,10 @@ const AddHotelForm = () => {
     formData.append("country", data.country);
     formData.append("province", data.province);
     formData.append("city", data.city);
+    formData.append("streetname", data.streetname);
+    formData.append("url", data.url);
+    formData.append("longitude", data.longitude);
+    formData.append("latitude", data.latitude);
     formData.append("locationDescription", data.locationDescription);
 
     amenitiesOptions.forEach(({ value }) => {
@@ -125,10 +135,12 @@ const AddHotelForm = () => {
         // reset();
         // setselectedImage(null);
         // setImagePreview(null);
+        setIsSubmitting(false);
         setDisplay(true);
       },
       onError: (error) => {
         toast.error(error?.response?.data?.message);
+        setIsSubmitting(false);
       },
     });
   };
@@ -249,11 +261,89 @@ const AddHotelForm = () => {
                 )}
               />
             </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <LoginInput
+                  required
+                  labelName={"City"}
+                  name={"city"}
+                  placeholder={"e.g. Kathmandu"}
+                  register={register}
+                  icon={
+                    <BiLocationPlus
+                      fontSize={24}
+                      className="text-[#8E8E93] pr-2"
+                    />
+                  }
+                />
+                <p className="text-red-600 text-sm mt-1">
+                  {errors?.city?.message}
+                </p>
+              </div>
+              <div>
+                <LoginInput
+                  required
+                  labelName={"Street Name"}
+                  name={"streetname"}
+                  placeholder={"e.g. Thamel, Freak Street"}
+                  register={register}
+                  icon={
+                    <BiLocationPlus
+                      fontSize={24}
+                      className="text-[#8E8E93] pr-2"
+                    />
+                  }
+                />
+                <p className="text-red-600 text-sm mt-1">
+                  {errors?.streetname?.message}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <LoginInput
+                  required
+                  labelName={"Latitude"}
+                  name={"latitude"}
+                  type="number"
+                  placeholder={"e.g. 27.7117"}
+                  register={register}
+                  icon={
+                    <BiLocationPlus
+                      fontSize={24}
+                      className="text-[#8E8E93] pr-2"
+                    />
+                  }
+                />
+                <p className="text-red-600 text-sm mt-1">
+                  {errors?.latitude?.message}
+                </p>
+              </div>
+              <div>
+                <LoginInput
+                  required
+                  labelName={"Longitude"}
+                  name={"longitude"}
+                  placeholder={"e.g. 85.2879"}
+                  register={register}
+                  icon={
+                    <BiLocationPlus
+                      fontSize={24}
+                      className="text-[#8E8E93] pr-2"
+                    />
+                  }
+                />
+                <p className="text-red-600 text-sm mt-1">
+                  {errors?.longitude?.message}
+                </p>
+              </div>
+            </div>
             <div>
               <LoginInput
-                labelName={"City"}
-                name={"city"}
-                placeholder={"e.g. Kathmandu"}
+                required
+                labelName={"Google url"}
+                name={"url"}
+                placeholder={"https://maps.app.goo.gl/MhCBRNLmaaS5unWN7"}
                 register={register}
                 icon={
                   <BiLocationPlus
@@ -263,7 +353,7 @@ const AddHotelForm = () => {
                 }
               />
               <p className="text-red-600 text-sm mt-1">
-                {errors?.city?.message}
+                {errors?.url?.message}
               </p>
             </div>
             <div className="flex flex-col gap-[6px]">
@@ -278,7 +368,9 @@ const AddHotelForm = () => {
               </p>
             </div>
             <div className="flex justify-end mt-4">
-              <Button btnName={"Add Hotel"} />
+              <Button
+                btnName={isSubmitting ? "Adding Hotel..." : "Add Hotel"}
+              />
             </div>
 
             {display && (

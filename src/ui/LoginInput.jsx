@@ -11,6 +11,7 @@ const LoginInput = ({
   defaultValue,
   value,
   className,
+  min,
   icon,
   disabled,
   onchange,
@@ -31,7 +32,8 @@ const LoginInput = ({
           value={value}
           type={type === "password" ? passwordType : type}
           placeholder={placeholder}
-          min={type === "number" && 1}
+          min={min}
+          step="any"
           className="w-full outline-none bg-inherit"
           {...register(name)}
           onChange={onchange}
