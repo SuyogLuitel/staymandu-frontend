@@ -6,6 +6,7 @@ import { truncateText } from "../utils/truncateText";
 import defaultImg from "../assets/default.jpg";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useAuthStore } from "../store/useAuthStore";
+import { useIncrementMutation } from "../hooks/useMutateData";
 
 const HotelCard = ({ data, index, admin }) => {
   const navigate = useNavigate();
@@ -29,10 +30,22 @@ const HotelCard = ({ data, index, admin }) => {
     }
   };
 
+  const incrementMutation = useIncrementMutation();
+
+  const handleIncrement = () => {
+    incrementMutation.mutateAsync(["patch", `/${data?._id}`], {
+      onSuccess: (response) => {},
+      onError: (error) => {},
+    });
+  };
+
   return (
     <div
       className="relative flex flex-col border rounded cursor-pointer hover:mt-1"
-      onClick={() => navigate(`/hotel/${data?._id}`, { state: isAdmin })}
+      onClick={() => {
+        navigate(`/hotel/${data?._id}`, { state: isAdmin });
+        handleIncrement();
+      }}
       key={index}
     >
       <div className="h-1/2">

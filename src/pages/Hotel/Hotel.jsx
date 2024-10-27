@@ -21,7 +21,6 @@ const Hotel = () => {
   const [selectedAmenities, setSelectedAmenities] = useState({});
   const [sortBy, setSortBy] = useState("default");
   const [page, setPage] = useState(1);
-
   const [isNearest, setIsNearest] = useState(false);
   const [location, setLocation] = useState({ latitude: null, longitude: null });
 

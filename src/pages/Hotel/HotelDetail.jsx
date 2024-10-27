@@ -263,7 +263,7 @@ const HotelDetail = () => {
                 <FaRegHeart fontSize={22} color="#1D293B" cursor={"pointer"} />
               )}
               <p className="text-lg text-[#1D293B] hover:underline cursor-pointer">
-                Add to favourite
+                {isFavorite ? "Added" : "Add"} to favourite
               </p>
             </div>
           )}

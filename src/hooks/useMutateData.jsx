@@ -51,3 +51,6 @@ export const useBookingMutation = () =>
 
 export const useVerifyMutation = () =>
   useMutate(["verify"], "api/v1/hotel/verify");
+
+export const useIncrementMutation = () =>
+  useMutate(["increment"], "api/v1/hotel/increment");
