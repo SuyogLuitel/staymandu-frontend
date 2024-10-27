@@ -49,7 +49,7 @@ const HotelDetail = () => {
   const { id } = useParams();
   const { user, loggedIn, favorites, addFavorite, removeFavorite } =
     useAuthStore();
-  const { data } = useSpecificHotelData(id);
+  const { data, isLoading } = useSpecificHotelData(id);
   const [displayReview, setDisplayReview] = useState(false);
   const [rating, setRating] = useState(0);
   const [key, setKey] = useState(0);
@@ -240,55 +240,97 @@ const HotelDetail = () => {
 
   return (
     <div className="pt-6 px-20 flex flex-col gap-4 bg-secondary">
-      <img
-        src={
-          data?.data?.image !== "undefined"
-            ? `${import.meta.env.VITE_IMAGE_URL}/${data?.data?.image}`
-            : defaultImg
-        }
-        alt="hotel"
-        className="w-[80vw] h-[70vh] rounded-md"
-      />
+      {isLoading ? (
+        <div className="w-[80vw] h-[70vh] bg-gray-200 rounded-md animate-pulse text-3xl flex items-center justify-center">
+          Image
+        </div>
+      ) : (
+        <img
+          src={
+            data?.data?.image !== "undefined"
+              ? `${import.meta.env.VITE_IMAGE_URL}/${data?.data?.image}`
+              : defaultImg
+          }
+          alt="hotel"
+          className="w-[80vw] h-[70vh] rounded-md"
+        />
+      )}
+
       <div className="p-4 flex flex-col gap-2">
         <div className="flex items-center justify-between w-[79vw]">
-          <h2 className="text-2xl font-bold">{data?.data?.title}</h2>
+          {isLoading ? (
+            <div className="h-6 w-60 bg-gray-300 rounded animate-pulse"></div>
+          ) : (
+            <h2 className="text-2xl font-bold">{data?.data?.title}</h2>
+          )}
+
           {admin === undefined && (
-            <div
-              className="flex items-center gap-2"
-              onClick={handleFavoriteToggle}
-            >
-              {isFavorite ? (
-                <FaHeart fontSize={22} color="#E92165" cursor={"pointer"} />
+            <>
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 bg-gray-300 rounded animate-pulse"></div>
+                  <div className="h-8 w-40 bg-gray-300 rounded animate-pulse"></div>
+                </div>
               ) : (
-                <FaRegHeart fontSize={22} color="#1D293B" cursor={"pointer"} />
+                <div
+                  className="flex items-center gap-2"
+                  onClick={handleFavoriteToggle}
+                >
+                  {isFavorite ? (
+                    <FaHeart fontSize={22} color="#E92165" cursor={"pointer"} />
+                  ) : (
+                    <FaRegHeart
+                      fontSize={22}
+                      color="#1D293B"
+                      cursor={"pointer"}
+                    />
+                  )}
+                  <p className="text-lg text-[#1D293B] hover:underline cursor-pointer">
+                    {isFavorite ? "Added" : "Add"} to favourite
+                  </p>
+                </div>
               )}
-              <p className="text-lg text-[#1D293B] hover:underline cursor-pointer">
-                {isFavorite ? "Added" : "Add"} to favourite
-              </p>
-            </div>
+            </>
           )}
         </div>
-        <div className="flex items-center gap-1 text-base">
-          <IoLocationOutline />
-          <p>{`${data?.data?.streetname}, ${data?.data?.city}, ${data?.data?.country}`}</p>
-        </div>
-        <div className="flex gap-1">
-          {Array.from({ length: fullStars }, (_, index) => (
-            <FaStar key={index} fontSize={20} color="#FBC20B" />
-          ))}
-          {hasHalfStar && <FaStarHalfAlt fontSize={20} color="#FBC20B" />}
-          {Array.from(
-            { length: 5 - fullStars - (hasHalfStar ? 1 : 0) },
-            (_, index) => (
-              <FaRegStar
-                key={index + fullStars + (hasHalfStar ? 1 : 0)}
-                fontSize={20}
-                color="#FBC20B"
-              />
-            )
-          )}
-          ( {data?.data?.ratings?.totalRating} rating )
-        </div>
+
+        {isLoading ? (
+          <div className="flex items-center gap-1 text-base">
+            <div className="h-6 w-6 bg-gray-300 rounded animate-pulse"></div>
+            <div className="h-6 w-72 bg-gray-300 rounded animate-pulse"></div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1 text-base">
+            <IoLocationOutline />
+            <p>{`${data?.data?.streetname}, ${data?.data?.city}, ${data?.data?.country}`}</p>
+          </div>
+        )}
+
+        {isLoading ? (
+          <div className="flex gap-1">
+            <div className="h-6 w-40 bg-gray-300 rounded animate-pulse"></div>
+            <div className="h-6 w-28 bg-gray-300 rounded animate-pulse"></div>
+          </div>
+        ) : (
+          <div className="flex gap-1">
+            {Array.from({ length: fullStars }, (_, index) => (
+              <FaStar key={index} fontSize={20} color="#FBC20B" />
+            ))}
+            {hasHalfStar && <FaStarHalfAlt fontSize={20} color="#FBC20B" />}
+            {Array.from(
+              { length: 5 - fullStars - (hasHalfStar ? 1 : 0) },
+              (_, index) => (
+                <FaRegStar
+                  key={index + fullStars + (hasHalfStar ? 1 : 0)}
+                  fontSize={20}
+                  color="#FBC20B"
+                />
+              )
+            )}
+            ( {data?.data?.ratings?.totalRating} rating )
+          </div>
+        )}
+
         <p className="text-base font-medium">Location Details</p>
         <p className="text-sm">{data?.data?.locationDescription}</p>
         <p className="text-base font-medium">About this hotel</p>
