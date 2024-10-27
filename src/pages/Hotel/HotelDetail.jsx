@@ -331,24 +331,45 @@ const HotelDetail = () => {
           </div>
         )}
 
-        <p className="text-base font-medium">Location Details</p>
-        <p className="text-sm">{data?.data?.locationDescription}</p>
-        <p className="text-base font-medium">About this hotel</p>
-        <p className="text-sm">{data?.data?.description}</p>
-        <p className="text-base font-medium">Popular Amneties</p>
-        <div className="grid grid-cols-3 gap-5">
-          {amnetiesOption.map(
-            (item, index) =>
-              item.exist && (
-                <div className="flex gap-1 items-center rounded" key={index}>
-                  {item.icons}
-                  <label htmlFor={item?.value} className="cursor-pointer">
-                    {item?.label}
-                  </label>
-                </div>
-              )
-          )}
-        </div>
+        {isLoading ? (
+          <div className="flex flex-col gap-4 mt-2">
+            <div className="h-5 w-28 bg-gray-300 rounded animate-pulse"></div>
+            <div className="h-5 w-[75vw] bg-gray-300 rounded animate-pulse"></div>
+            <div className="h-5 w-32 bg-gray-300 rounded animate-pulse"></div>
+            <div className="h-5 w-[78vw] bg-gray-300 rounded animate-pulse"></div>
+            <div className="h-5 w-32 bg-gray-300 rounded animate-pulse"></div>
+            <div className="grid grid-cols-3 gap-5">
+              <div className="h-5 w-32 bg-gray-300 rounded animate-pulse"></div>
+              <div className="h-5 w-32 bg-gray-300 rounded animate-pulse"></div>
+              <div className="h-5 w-32 bg-gray-300 rounded animate-pulse"></div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3 mt-2">
+            <p className="text-base font-medium">Location Details</p>
+            <p className="text-sm">{data?.data?.locationDescription}</p>
+            <p className="text-base font-medium">About this hotel</p>
+            <p className="text-sm">{data?.data?.description}</p>
+            <p className="text-base font-medium">Popular Amneties</p>
+
+            <div className="grid grid-cols-3 gap-5">
+              {amnetiesOption.map(
+                (item, index) =>
+                  item.exist && (
+                    <div
+                      className="flex gap-1 items-center rounded"
+                      key={index}
+                    >
+                      {item.icons}
+                      <label htmlFor={item?.value} className="cursor-pointer">
+                        {item?.label}
+                      </label>
+                    </div>
+                  )
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Room available */}
         <p className="text-base font-medium mt-6">Room Available:</p>
