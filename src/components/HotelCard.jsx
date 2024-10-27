@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoLocationOutline } from "react-icons/io5";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -6,12 +6,20 @@ import { truncateText } from "../utils/truncateText";
 import defaultImg from "../assets/default.jpg";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useAuthStore } from "../store/useAuthStore";
-import { useIncrementMutation } from "../hooks/useMutateData";
+import {
+  useFavoriteMutation,
+  useIncrementMutation,
+} from "../hooks/useMutateData";
+import toast from "react-hot-toast";
+import { useFavorite } from "../hooks/useQueryData";
 
 const HotelCard = ({ data, index, admin }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { favorites, addFavorite, removeFavorite } = useAuthStore();
+  const { user, loggedIn, favorites, addFavorite, removeFavorite } =
+    useAuthStore();
+
+  const { data: favData } = useFavorite(user?.data?._id);
 
   const fullStars = Math.floor(data?.ratings?.averageRating);
   const hasHalfStar = data?.ratings?.averageRating % 1 >= 0.5;
@@ -21,7 +29,28 @@ const HotelCard = ({ data, index, admin }) => {
 
   const isFavorite = favorites.some((fav) => fav?._id === data?._id);
 
+  const favoriteMutation = useFavoriteMutation();
+
   const handleFavoriteToggle = (event) => {
+    event.stopPropagation();
+
+    const postData = {
+      userId: user?.data?._id,
+      hotelId: data?._id,
+    };
+    favoriteMutation.mutateAsync(["post", "", postData], {
+      onSuccess: (response) => {
+        toast.success(response?.message);
+      },
+      onError: (error) => {
+        toast.error("Failed to add favorite");
+      },
+    });
+  };
+
+  const handleFavoriteToggleOffline = (event) => {
+    event.stopPropagation();
+
     event.stopPropagation();
     if (isFavorite) {
       removeFavorite(data?._id);
@@ -120,9 +149,17 @@ const HotelCard = ({ data, index, admin }) => {
       {(location.pathname !== "/myProfile" || admin !== true) && (
         <div
           className="bg-white flex items-center justify-center p-2 absolute top-2 right-3 rounded-md"
-          onClick={handleFavoriteToggle}
+          onClick={
+            loggedIn ? handleFavoriteToggle : handleFavoriteToggleOffline
+          }
         >
-          {isFavorite ? (
+          {loggedIn ? (
+            favData?.data?.map((fav) => fav._id).includes(data?._id) ? (
+              <FaHeart fontSize={20} color="#E92165" />
+            ) : (
+              <FaRegHeart fontSize={20} color="#1D293B" />
+            )
+          ) : isFavorite ? (
             <FaHeart fontSize={20} color="#E92165" />
           ) : (
             <FaRegHeart fontSize={20} color="#1D293B" />

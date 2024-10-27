@@ -10,11 +10,13 @@ import MyHotel from "./MyHotel";
 import BookingHistory from "./BookingHistory";
 import { useLocation } from "react-router-dom";
 import ChangePassword from "./ChangePassword";
+import { useFavorite } from "../../hooks/useQueryData";
 
 const Profile = () => {
   const location = useLocation();
   const { activeNum } = location.state || {};
-  const { favorites } = useAuthStore();
+  const { user } = useAuthStore();
+  const { data: favData } = useFavorite(user?.data?._id);
 
   const { logout } = useAuthStore();
   const [active, setActive] = useState(activeNum || 0);
@@ -42,7 +44,7 @@ const Profile = () => {
             <FaRegHeart fontSize={24} />
             <span>Favorites</span>
             <div className="bg-red-200 text-red-700 rounded-full w-7 h-7 flex justify-center text-sm items-center p-2">
-              {favorites?.length}
+              {favData?.data?.length}
             </div>
           </li>
           <li

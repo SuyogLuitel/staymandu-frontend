@@ -39,3 +39,6 @@ export const useHotelDataByUserId = (id) =>
 
 export const useBookingDataByUserId = (id) =>
   useQueryData(["bookingByUserId", id], `api/v1/hotel/booking/${id}`, "");
+
+export const useFavorite = (id) =>
+  useQueryData(["favorite", id], `api/v1/user/favorite/${id}`, "");

@@ -37,6 +37,9 @@ export const useLoginMutation = () => useMutate(["login"], "api/v1/user/login");
 export const useSignupMutation = () =>
   useMutate(["signup"], "api/v1/user/register");
 
+export const useFavoriteMutation = () =>
+  useMutate(["favorite"], "api/v1/user/favorite");
+
 export const useHotelMutation = () =>
   useMutate(["hotel"], "api/v1/hotel/add", "multipart/form-data");
 

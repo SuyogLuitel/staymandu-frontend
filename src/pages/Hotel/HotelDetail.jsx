@@ -22,13 +22,14 @@ import { IoMdRestaurant } from "react-icons/io";
 import { FaPersonSwimming } from "react-icons/fa6";
 import { PiCoffeeFill } from "react-icons/pi";
 import Button from "../../ui/Button";
-import { useSpecificHotelData } from "../../hooks/useQueryData";
+import { useFavorite, useSpecificHotelData } from "../../hooks/useQueryData";
 import { useLocation, useParams } from "react-router-dom";
 import { getInitials } from "../../utils/getInitials";
 import { useAuthStore } from "../../store/useAuthStore";
 import Rating from "react-rating-stars-component";
 import {
   useBookingMutation,
+  useFavoriteMutation,
   useReviewMutation,
 } from "../../hooks/useMutateData";
 import toast from "react-hot-toast";
@@ -58,9 +59,30 @@ const HotelDetail = () => {
   const [roomDateRanges, setRoomDateRanges] = useState({});
   const [showCalendar, setShowCalendar] = useState({});
 
+  const { data: favData } = useFavorite(user?.data?._id);
+
   const isFavorite = favorites.some((fav) => fav?._id === data?.data?._id);
 
+  const favoriteMutation = useFavoriteMutation();
+
   const handleFavoriteToggle = (event) => {
+    event.stopPropagation();
+
+    const postData = {
+      userId: user?.data?._id,
+      hotelId: data?.data?._id,
+    };
+    favoriteMutation.mutateAsync(["post", "", postData], {
+      onSuccess: (response) => {
+        toast.success(response?.message);
+      },
+      onError: (error) => {
+        toast.error("Failed to add favorite");
+      },
+    });
+  };
+
+  const handleFavoriteToggleOffline = (event) => {
     event.stopPropagation();
     if (isFavorite) {
       removeFavorite(data?.data?._id);
@@ -274,19 +296,33 @@ const HotelDetail = () => {
               ) : (
                 <div
                   className="flex items-center gap-2"
-                  onClick={handleFavoriteToggle}
+                  onClick={
+                    loggedIn
+                      ? handleFavoriteToggle
+                      : handleFavoriteToggleOffline
+                  }
                 >
-                  {isFavorite ? (
-                    <FaHeart fontSize={22} color="#E92165" cursor={"pointer"} />
+                  {loggedIn ? (
+                    favData?.data
+                      ?.map((fav) => fav._id)
+                      .includes(data?.data?._id) ? (
+                      <FaHeart fontSize={22} color="#E92165" />
+                    ) : (
+                      <FaRegHeart fontSize={22} color="#1D293B" />
+                    )
+                  ) : isFavorite ? (
+                    <FaHeart fontSize={20} color="#E92165" />
                   ) : (
-                    <FaRegHeart
-                      fontSize={22}
-                      color="#1D293B"
-                      cursor={"pointer"}
-                    />
+                    <FaRegHeart fontSize={20} color="#1D293B" />
                   )}
                   <p className="text-lg text-[#1D293B] hover:underline cursor-pointer">
-                    {isFavorite ? "Added" : "Add"} to favourite
+                    {isFavorite ||
+                    favData?.data
+                      ?.map((fav) => fav._id)
+                      .includes(data?.data?._id)
+                      ? "Added"
+                      : "Add"}{" "}
+                    to favourite
                   </p>
                 </div>
               )}

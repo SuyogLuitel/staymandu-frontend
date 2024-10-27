@@ -14,7 +14,6 @@ import toast from "react-hot-toast";
 import Tooltip from "../../components/Tooltip";
 
 const Hotel = () => {
-  // State for search input, rating filter, and selected amenities
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRating, setSelectedRating] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
@@ -25,6 +24,7 @@ const Hotel = () => {
   const [location, setLocation] = useState({ latitude: null, longitude: null });
 
   const { register } = useForm();
+
   const { data } = isNearest
     ? useNearestHotelData(location.longitude, location.latitude, page, sortBy)
     : useHotelData(page, sortBy);
