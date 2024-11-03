@@ -63,7 +63,7 @@ const Hotel = () => {
 
   const typeOptions = [
     { label: "Hotel", value: "Hotel" },
-    { label: "Appartment", value: "Appartment" },
+    { label: "Apartment", value: "Apartment" },
     { label: "Resort", value: "Resort" },
     { label: "Villa", value: "Villa" },
   ];
