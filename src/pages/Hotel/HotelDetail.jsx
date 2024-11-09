@@ -336,7 +336,10 @@ const HotelDetail = () => {
             <div className="h-6 w-72 bg-gray-300 rounded animate-pulse"></div>
           </div>
         ) : (
-          <div className="flex items-center gap-1 text-base">
+          <div
+            onClick={() => window.open(data?.data?.url, "_blank")}
+            className="flex items-center gap-1 text-base hover:underline cursor-pointer"
+          >
             <IoLocationOutline />
             <p>{`${data?.data?.streetname}, ${data?.data?.city}, ${data?.data?.country}`}</p>
           </div>
