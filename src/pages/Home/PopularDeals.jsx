@@ -16,6 +16,7 @@ const PopularDeals = () => {
             }
             return b.ratings.totalRating - a.ratings.totalRating;
           })
+          .slice(0, 4)
           .map((item, index) => (
             <HotelCard data={item} index={index} key={index} />
           ))}
