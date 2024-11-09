@@ -47,7 +47,7 @@ const Profile = () => {
               {favData?.data?.length}
             </div>
           </li>
-          <li
+          {/* <li
             className={`flex items-center space-x-2 cursor-pointer hover:bg-gray-200 p-2 rounded ${
               active === 2 && "bg-gray-200"
             }`}
@@ -55,7 +55,7 @@ const Profile = () => {
           >
             <FaHotel fontSize={24} />
             <span>My Hotels</span>
-          </li>
+          </li> */}
           <li
             className={`flex items-center space-x-2 cursor-pointer hover:bg-gray-200 p-2 rounded ${
               active === 3 && "bg-gray-200"
@@ -90,9 +90,9 @@ const Profile = () => {
           <ProfileSection />
         ) : active === 1 ? (
           <Favorites />
-        ) : active === 2 ? (
-          <MyHotel />
-        ) : active === 3 ? (
+        ) : // ) : active === 2 ? (
+        //   <MyHotel />
+        active === 3 ? (
           <BookingHistory />
         ) : active === 4 ? (
           <ChangePassword />

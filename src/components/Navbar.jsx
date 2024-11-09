@@ -29,9 +29,7 @@ const Navbar = () => {
           </div>
           <div
             className="flex items-center cursor-pointer hover:text-[#1D293B]"
-            onClick={() =>
-              loggedIn ? navigate("/hotel/add") : navigate("/login")
-            }
+            onClick={() => window.open("http://localhost:5174/login", "_blank")}
           >
             <MdAdd fontSize={26} cursor={"pointer"} />
             <p className="text-lg font-medium">List your hotel</p>

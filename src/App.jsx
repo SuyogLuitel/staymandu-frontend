@@ -16,6 +16,7 @@ import Verify from "./pages/Verify/Verify";
 
 const App = () => {
   const { loggedIn } = useAuthStore();
+
   return (
     <BrowserRouter>
       <ScrollToTop />
