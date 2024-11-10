@@ -16,12 +16,21 @@ export const useQueryData = (key, path, params = "", enabled = true) => {
   });
 };
 
-export const useHotelData = (page, sortBy) =>
+export const useHotelData = (page, sortBy, userId) =>
   useQueryData(
-    ["hotel", page, sortBy],
+    ["hotel", page, sortBy, userId],
     `api/v1/hotel/list?page=${page}&sortBy=${sortBy}`,
     ""
   );
+
+// export const useHotelData = (page, sortBy, userId) =>
+//   useQueryData(
+//     ["hotel", page, sortBy, userId],
+//     `api/v1/hotel/list?page=${page}&sortBy=${sortBy}&${
+//       userId ? `&userId=${userId}` : ""
+//     }`,
+//     ""
+//   );
 
 export const useNearestHotelData = (longitude, latitude, page, sortBy) =>
   useQueryData(

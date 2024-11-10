@@ -114,7 +114,7 @@ const HotelCard = ({ data, index, admin }) => {
                 />
               )
             )}
-            ({data?.ratings?.averageRating})
+            ({Math.round(data?.ratings?.averageRating * 100) / 100})
           </div>
           <p>
             ( {data?.ratings?.totalRating}{" "}
